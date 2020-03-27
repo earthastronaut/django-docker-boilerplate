@@ -1,0 +1,12 @@
+# Project Specific
+untracked_*
+
+# Python Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python Django stuff:
+*.log
+static/
+settings/local.py
