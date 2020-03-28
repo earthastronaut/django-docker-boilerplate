@@ -1,0 +1,33 @@
+{
+    "version": 1,
+    "disable_existing_loggers": true,
+    "comment_1": "0 (show all) < debug < info < warning < error > critical < NOSET",
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} {process} {module:10}:L{lineno} {levelname:8} \n {message}",
+            "datefmt": "%Y-%m-%dT%H:%M:%S",            
+            "style": "{"
+        },
+        "default": {
+            "format": "{levelname} | {message}",
+            "style": "{"            
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "default"
+        }
+    },
+    "root": {        
+        "handlers": ["console"],
+        "level": "DEBUG"
+    },
+    "loggers": {
+        "webserver": {
+            "handlers": ["console"],
+            "level": "DEBUG"
+        }
+    }
+}
