@@ -16,9 +16,9 @@ services:
       - 8000:8080
     volumes:
       - ./webserver:/code     
-    # depends_on:
-    #   # TODO: for project choose a database backend 
-    #   - db-sql-server
+    depends_on:
+      # TODO: for project choose a database backend 
+      - db-sql-server
     #   - db-postgres
     environment:
       DJANGO_SETTINGS_MODULE: webserver.settings.local

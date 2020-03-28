@@ -9,7 +9,11 @@
 #
 
 # Webserver Framework
-Django
+# version is required by django-pyodbc-azure
+Django<2.2,>=2.1.0
+
+# For connecting to sql server
+django-pyodbc-azure
 
 # For connecting to postgres
 psycopg2

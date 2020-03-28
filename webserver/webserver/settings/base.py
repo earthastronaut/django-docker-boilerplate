@@ -109,6 +109,20 @@ DATABASES = {
         'PASSWORD': os.environ['POSTGRES_PASSWORD'],
         'PORT': '5432',
     },
+
+    'db-sql-server': {
+        'ENGINE': 'sql_server.pyodbc',
+        # 'HOST': 'MochanCmsDB-local',  # FreeTDS Reference
+        'HOST': os.environ['MSSQL_HOST'],
+        'NAME': os.environ['MSSQL_DATABASE_NAME'],
+        'USER': os.environ['MSSQL_USER'],
+        'PASSWORD': os.environ['MSSQL_PASSWORD'],
+        'PORT': '1433',
+        'OPTIONS': {
+            # from /etc/odbcinst.ini
+            'driver': 'ODBC Driver 17 for SQL Server'
+        }
+    }
 }
 
 # TODO: for project choose a database backend, pick that as default
