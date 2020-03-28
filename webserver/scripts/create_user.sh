@@ -12,15 +12,22 @@ fi
 if [[ "$3" == "is_staff" ]]
 then
 	is_staff='True'
+	is_superuser='False'
+elif [[ "$3" == "is_superuser" ]]
+then
+	is_staff='True'
+	is_superuser='True'
 else
 	is_staff='False'
+	is_superuser='False'
 fi
 
 docker-compose exec webserver \
 	django-admin shell \
-	--command="from django.contrib.auth.models import User; user=User(username='${username}', is_staff=${is_staff}); user.set_password('${password}'); user.save()"
+	--command="from django.contrib.auth.models import User; user=User(username='${username}', is_staff=${is_staff}, is_superuser=${is_superuser}); user.set_password('${password}'); user.save()"
 exitcode=$?
-if [[ exitcode == 0 ]]
+
+if [[ $exitcode == 0 ]]
 then
-	echo "User Created!"
+	echo "User Created"
 fi
