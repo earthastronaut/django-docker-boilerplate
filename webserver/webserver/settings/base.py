@@ -100,6 +100,15 @@ DATABASES = {
         'PASSWORD': '',
         'PORT': '5432',
     },
+
+    'db-postgres': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ['POSTGRES_HOST'],
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'PORT': '5432',
+    },
 }
 
 # TODO: for project choose a database backend, pick that as default
