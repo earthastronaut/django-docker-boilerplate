@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wait for database
+# wait for database
 exitcode=1
 while [[ $exitcode != 0 ]]
 do
