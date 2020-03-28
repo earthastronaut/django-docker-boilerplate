@@ -1,7 +1,6 @@
 version: '3.7'
 
 volumes:
-  data-sql-server:
   data-postgres:
 
 services:
@@ -16,19 +15,41 @@ services:
       - 8000:8080
     volumes:
       - ./webserver:/code     
-    # depends_on:
-    #   # TODO: for project choose a database backend 
-    #   - db-sql-server
-    #   - db-postgres
+    depends_on:
+      # TODO: for project choose a database backend 
+      - db-postgres
     environment:
       DJANGO_SETTINGS_MODULE: webserver.settings.local
       DJANGO_LOGGING_CONFIG: /code/webserver/logging/dev.json
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
 
       # TODO: for project choose a database backend 
-      DEMO_CHOOSE_DATABASE_DEFAULT: db-sqlite
+      DEMO_CHOOSE_DATABASE_DEFAULT: db-postgres
 
       # service sqlite
       # not quite a service and doesn't have any user protections so 
       # probably don't use it but it is a simple database
       SQLITE_FILEPATH: /code/untracked_sqlite.db
+
+      # service postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: db-postgres
+
+  # TODO: for project choose a database backend 
+
+  db-postgres:
+    # https://hub.docker.com/_/postgres
+    build: database/postgres/.
+    restart: always    
+    expose:
+      - 5432
+    volumes:
+      # Named volume is not necessary for this, can mount to the system
+      # See "Where to Store Data" in https://hub.docker.com/_/postgres
+      - data-postgres:/var/lib/postgresql/data      
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
