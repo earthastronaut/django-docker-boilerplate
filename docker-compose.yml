@@ -1,0 +1,34 @@
+version: '3.7'
+
+volumes:
+  data-sql-server:
+  data-postgres:
+
+services:
+
+  webserver:    
+    # https://docs.docker.com/compose/django/
+    build: 
+      context: webserver/.      
+      args:
+        SERVICE_ENVIRONMENT: local # local, dev, stage, prod
+    ports:
+      - 8000:8080
+    volumes:
+      - ./webserver:/code     
+    # depends_on:
+    #   # TODO: for project choose a database backend 
+    #   - db-sql-server
+    #   - db-postgres
+    environment:
+      DJANGO_SETTINGS_MODULE: webserver.settings.local
+      DJANGO_LOGGING_CONFIG: /code/webserver/logging/dev.json
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+
+      # TODO: for project choose a database backend 
+      DEMO_CHOOSE_DATABASE_DEFAULT: db-sqlite
+
+      # service sqlite
+      # not quite a service and doesn't have any user protections so 
+      # probably don't use it but it is a simple database
+      SQLITE_FILEPATH: /code/untracked_sqlite.db
