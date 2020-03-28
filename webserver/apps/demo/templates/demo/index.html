@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome!</h1>
+<div>
+  Congratulations on getting this demo to work!
+</div>
+
+</br>
+</br>
+
+<div>
+<h1>You are grateful for:</h1>
+<ul>
+{% for gratitude in gratitudes %}
+    <li>{{ gratitude.description }}</li>
+{% endfor %}
+</ul>
+</div>
+
+</br>
+</br>
+
+
+<div>
+<h1>Runtime Information:</h1>
+<p>Database service: {{ database_backend }}</p>
+</div>
+
+
+{% endblock %}
+
