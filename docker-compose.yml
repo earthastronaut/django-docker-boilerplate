@@ -1,6 +1,7 @@
 version: '3.7'
 
 volumes:
+  data-sql-server:
   data-postgres:
 
 services:
@@ -15,21 +16,28 @@ services:
       - 8000:8080
     volumes:
       - ./webserver:/code     
-    depends_on:
-      # TODO: for project choose a database backend 
-      - db-postgres
+    # depends_on:
+    #   # TODO: for project choose a database backend 
+    #   - db-sql-server
+    #   - db-postgres
     environment:
       DJANGO_SETTINGS_MODULE: webserver.settings.local
       DJANGO_LOGGING_CONFIG: /code/webserver/logging/dev.json
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
 
       # TODO: for project choose a database backend 
-      DEMO_CHOOSE_DATABASE_DEFAULT: db-postgres
+      DEMO_CHOOSE_DATABASE_DEFAULT: db-sqlite
 
       # service sqlite
       # not quite a service and doesn't have any user protections so 
       # probably don't use it but it is a simple database
       SQLITE_FILEPATH: /code/untracked_sqlite.db
+
+      # service sql server
+      MSSQL_DATABASE_NAME: ${MSSQL_DATABASE_NAME}
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_PASSWORD: ${MSSQL_PASSWORD}
+      MSSQL_HOST: db-sql-server
 
       # service postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -38,6 +46,28 @@ services:
       POSTGRES_HOST: db-postgres
 
   # TODO: for project choose a database backend 
+
+  db-sql-server:
+    # https://hub.docker.com/_/microsoft-mssql-server
+    build: database/sql_server/.
+    restart: always    
+    expose:
+      - 1433
+    volumes:
+      # This mounted volume is only useful for accessing scripts and other
+      # files from the code repository. Not necessary for the container to run. 
+      - ./database/sql_server:/opt/app
+
+      # Named volume persists data across all containers
+      # this includes the SA_PASSWORD after volume is created 
+      # to delete data run `docker volume rm mochancms-db-data`
+      - data-sql-server:/var/opt/mssql
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+      # database and user created in docker/sql_server/run.sh
+      MSSQL_DATABASE_NAME: ${MSSQL_DATABASE_NAME}
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_PASSWORD: ${MSSQL_PASSWORD}
 
   db-postgres:
     # https://hub.docker.com/_/postgres
