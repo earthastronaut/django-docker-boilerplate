@@ -9,4 +9,4 @@ __pycache__/
 # Python Django stuff:
 *.log
 static/
-settings/local.py
+local.py
