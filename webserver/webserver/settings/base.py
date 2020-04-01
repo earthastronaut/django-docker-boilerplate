@@ -14,6 +14,18 @@ import os
 import json
 import logging.config
 
+
+__all__ = [
+    'SERVICE_ENVIRONMENT', 'BASE_DIR', 'SECRET_KEY', 'DEBUG',
+    'ALLOWED_HOSTS', 'INSTALLED_APPS', 'MIDDLEWARE', 'ROOT_URLCONF',
+    'TEMPLATES', 'WSGI_APPLICATION', 'DATABASES', 'AUTH_PASSWORD_VALIDATORS',
+    'LANGUAGE_CODE', 'TIME_ZONE', 'USE_I18N', 'USE_TZ',
+    'STATIC_URL', 'LOGGING_CONFIG',
+]
+
+
+SERVICE_ENVIRONMENT = os.environ['SERVICE_ENVIRONMENT']
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # /code/
 BASE_DIR = os.path.dirname(
@@ -32,7 +44,7 @@ BASE_DIR = os.path.dirname(
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (SERVICE_ENVIRONMENT in ('local', 'dev', 'stage'))
 
 ALLOWED_HOSTS = []
 
@@ -167,6 +179,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 # Logging
-with open(os.environ['DJANGO_LOGGING_CONFIG']) as _:
+LOGGING_CONFIG = os.path.join(BASE_DIR, os.environ['DJANGO_LOGGING_CONFIG'])
+with open(LOGGING_CONFIG) as _:
     logging.config.dictConfig(json.load(_))

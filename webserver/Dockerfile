@@ -22,27 +22,26 @@ RUN cat /etc/odbcinst.ini
 # ########################################################################### #
 # Build Django Project
 # ########################################################################### #
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "/code:/code/apps:$PYTHONPATH"
 ENV PATH "/code/bin:$PATH"
+ENV PYTHONPATH "/code:/code/apps:$PYTHONPATH"
+ENV PYTHONUNBUFFERED 1
 
+# Python Requirements
 WORKDIR /code/bin
 
 COPY bin/pip_install_requirements.sh .
 
-WORKDIR /code
-
-# Python Requirements
-COPY requirements.txt .
-COPY requirements_freeze.txt .
-RUN pip_install_requirements.sh requirements.txt requirements_freeze.txt
+WORKDIR /code/requirements
+COPY requirements/base.txt .
+COPY requirements/dev.txt .
+COPY requirements/local.txt .
+COPY requirements/stage.txt .
+COPY requirements/prod.txt .
+RUN pip_install_requirements.sh /code/requirements
 
 # copy all code over
+WORKDIR /code 
 COPY . .
 
 EXPOSE 8080
 CMD ["runserver.sh"]
-
-
-
-

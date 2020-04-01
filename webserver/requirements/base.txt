@@ -1,0 +1,22 @@
+# -------------------------------------------
+# Requirements without Version Specifiers
+# -------------------------------------------
+#
+# # Webserver Framework
+# # Note: django-pyodbc-azure requires <2.2,>=2.1.0
+# Django
+# 
+# # For connecting to sql server
+# django-pyodbc-azure
+#
+# # For connecting to postgres
+# psycopg2
+#
+# -------------------------------------------
+# Requirements with Versions
+# -------------------------------------------
+Django==2.1.15
+django-pyodbc-azure==2.1.0.0
+psycopg2==2.8.4
+pyodbc==4.0.30
+pytz==2019.3

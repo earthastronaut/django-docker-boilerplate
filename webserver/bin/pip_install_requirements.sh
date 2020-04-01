@@ -1,57 +1,64 @@
 #!/bin/bash
 
-# requirements.txt which has unfixed dependency versions
-requirements=$1
+set -e 
 
-# requirements_freeze.txt has fixed dependency versions
-requirements_freeze=$2
+# Usage: 
+# 	pip_install_requirements requirements_dir
+
+requirements_dir="$1"
 
 # ########################################################################### #
-# intro
+# Select Requirements File
+# ########################################################################### #
+
+case "$SERVICE_ENVIRONMENT" in
+	"local" ) 	requirements_file=local.txt
+		;;
+	"dev" ) 	requirements_file=dev.txt
+		;;
+	"stage" ) 	requirements_file=stage.txt
+		;;
+	"prod" ) 	requirements_file=prod.txt
+		;;
+	"local" ) 	requirements_file=local.txt
+		;;
+	* )
+		echo "unknown SERVICE_ENVIRONMENT=${SERVICE_ENVIRONMENT}" >&2 
+		exit 1
+	;;
+esac
+
+requirements_filepath="$requirements_dir"/"$requirements_file"
+
+# ########################################################################### #
+# Install Requirements
+# ########################################################################### #
 
 echo "---------------------------"
 echo "Install Python Requirements"
 echo "---------------------------"
 echo "SERVICE_ENVIRONMENT=$SERVICE_ENVIRONMENT"
-echo "requirements=$requirements"
-echo "requirements_freeze=$requirements_freeze"
+echo "requirements=$requirements_filepath"
 echo "---------------------------"
-
-
-# ########################################################################### #
-# install
 
 pip install -U pip setuptools wheel
-
-if [[ "$SERVICE_ENVIRONMENT" == "local"  || "$SERVICE_ENVIRONMENT" == "dev" ]]
-then
-	pip install -r $requirements
-
-elif [[ "$SERVICE_ENVIRONMENT" == "stage" || "$SERVICE_ENVIRONMENT" == "prod" ]]
-then
-	pip install -r $requirements_freeze
-
-else
-	echo "unknown SERVICE_ENVIRONMENT=${SERVICE_ENVIRONMENT}" >&2 
-	exit 1
-fi
+pip install -r $requirements_filepath
 
 # ########################################################################### #
-# verify that requirements installed are correct
-
-pip freeze > /tmp/install_current_pip_freeze.txt
-
-diff --strip-trailing-cr /tmp/install_current_pip_freeze.txt $requirements_freeze > /tmp/install_diff.txt 2>&1
-exitcode=$?
+# Check for Update to Requirements
+# ########################################################################### #
 
 echo "---------------------------"
-echo "current pip freeze"
+echo "Check Python Requirements"
 echo "---------------------------"
-cat /tmp/install_current_pip_freeze.txt
+pip list --outdated
+
+# ########################################################################### #
+# Print out current pip freeze
+# ########################################################################### #
 
 echo "---------------------------"
-echo "requirements diff"
+echo "Current pip freeze"
 echo "---------------------------"
-cat /tmp/install_diff.txt
-
-exit $exitcode
+pip freeze
+echo "---------------------------"

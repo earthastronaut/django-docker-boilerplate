@@ -1,0 +1,12 @@
+# -------------------------------------------
+# Requirements without Version Specifiers
+# -------------------------------------------
+#
+# # For live debugging
+# django-debug-toolbar
+# 
+# -------------------------------------------
+# Requirements with Versions
+# -------------------------------------------
+-r base.txt
+django-debug-toolbar==2.2

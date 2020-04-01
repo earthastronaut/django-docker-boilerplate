@@ -22,7 +22,7 @@ services:
     #   - db-postgres
     environment:
       DJANGO_SETTINGS_MODULE: webserver.settings.local
-      DJANGO_LOGGING_CONFIG: /code/webserver/logging/dev.json
+      DJANGO_LOGGING_CONFIG: logging/dev.json
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
 
       # TODO: for project choose a database backend 
