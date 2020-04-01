@@ -4,8 +4,11 @@ echo $0
 PROJECT_DIR=$(dirname "$(readlink "$0")")
 usage="usage: $(basename "$0") <command> 
 
+This script helps with simple command shortcuts for development. 
 
-This script helps with simple command shortcuts
+NOT RECOMMENDED TO USE THESE FOR PRODUCTION. USE ./scripts/prod FOR 
+SCRIPTS NEEDED BY DOWNSTREAM BUILD SERVICES.
+
 
 general helper commands 
 	link_me		Link this cmd to /usr/local/bin/cmd
@@ -76,6 +79,16 @@ manage.py)
 		echo "No container webserver found, executing with 'run'"
 		docker-compose run --rm webserver manage.py ${@:2}
 	fi
+	exit
+	;;
+
+createuser)
+	./scripts/dev/create_user.sh ${@:2}
+	exit
+	;;
+
+deleteuser)
+	./scripts/dev/delete_user.sh ${@:2}
 	exit
 	;;
 
