@@ -83,12 +83,12 @@ manage.py)
 	;;
 
 createuser)
-	./scripts/dev/create_user.sh ${@:2}
+	webserver/scripts/create_user.sh ${@:2}
 	exit
 	;;
 
 deleteuser)
-	./scripts/dev/delete_user.sh ${@:2}
+	webserver/scripts/delete_user.sh ${@:2}
 	exit
 	;;
 

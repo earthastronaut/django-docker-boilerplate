@@ -26,7 +26,7 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
 
       # TODO: for project choose a database backend 
-      DEMO_CHOOSE_DATABASE_DEFAULT: db-sql-server
+      DEMO_CHOOSE_DATABASE_DEFAULT: db-postgres
 
       # service sqlite
       # not quite a service and doesn't have any user protections so 
