@@ -11,18 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import json
-import logging.config
-
-
-__all__ = [
-    'SERVICE_ENVIRONMENT', 'BASE_DIR', 'SECRET_KEY', 'DEBUG',
-    'ALLOWED_HOSTS', 'INSTALLED_APPS', 'MIDDLEWARE', 'ROOT_URLCONF',
-    'TEMPLATES', 'WSGI_APPLICATION', 'DATABASES', 'AUTH_PASSWORD_VALIDATORS',
-    'LANGUAGE_CODE', 'TIME_ZONE', 'USE_I18N', 'USE_TZ',
-    'STATIC_URL', 'LOGGING_CONFIG',
-]
-
 
 SERVICE_ENVIRONMENT = os.environ['SERVICE_ENVIRONMENT']
 
@@ -181,6 +169,40 @@ STATIC_URL = '/static/'
 
 
 # Logging
-LOGGING_CONFIG = os.path.join(BASE_DIR, os.environ['DJANGO_LOGGING_CONFIG'])
-with open(LOGGING_CONFIG) as _:
-    logging.config.dictConfig(json.load(_))
+
+# 0 (show all) < debug < info < warning < error > critical < NOSET
+LOGGING_LEVEL = os.enviorn.get('DJANGO_LOGGING_LEVEL', 'DEBUG')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': (
+                '{asctime} {process} {module:10}:L{lineno} '
+                '{levelname:8} \n {message}'
+            ),
+            'style': '{'
+        },
+        'default': {
+            'format': '{levelname} | {message}',
+            'style': '{'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': LOGGING_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        }
+    },
+    'root': {
+        'level': LOGGING_LEVEL,
+        'handlers': ['console']
+    },
+    'loggers': {
+        'webserver': {
+            'handlers': ['console'],
+            'level': LOGGING_LEVEL,
+        }
+    }
+}

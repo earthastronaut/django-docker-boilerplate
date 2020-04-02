@@ -1,5 +1,3 @@
-from webserver.settings.base import *
+from webserver.settings.stage import *
 
 assert SERVICE_ENVIRONMENT == 'prod', SERVICE_ENVIRONMENT
-
-DEBUG = False
