@@ -92,21 +92,21 @@ DATABASES = {
 
     # TODO: for project choose a database backend
 
-    'db-sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ['SQLITE_FILEPATH'],
-        'HOST': '',
-        'USER': '',
-        'PASSWORD': '',
-        'PORT': '5432',
-    },
-
     'db-postgres': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.environ['POSTGRES_HOST'],
         'NAME': os.environ['POSTGRES_DB'],
         'USER': os.environ['POSTGRES_USER'],
         'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'PORT': '5432',
+    },
+
+    'db-sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.environ['SQLITE_FILEPATH'],
+        'HOST': '',
+        'USER': '',
+        'PASSWORD': '',
         'PORT': '5432',
     },
 
@@ -171,7 +171,7 @@ STATIC_URL = '/static/'
 # Logging
 
 # 0 (show all) < debug < info < warning < error > critical < NOSET
-LOGGING_LEVEL = os.enviorn.get('DJANGO_LOGGING_LEVEL', 'DEBUG')
+LOGGING_LEVEL = os.environ.get('DJANGO_LOGGING_LEVEL', 'DEBUG')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
