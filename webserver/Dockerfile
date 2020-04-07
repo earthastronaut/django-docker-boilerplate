@@ -4,6 +4,17 @@ FROM python:3
 ARG SERVICE_ENVIRONMENT=local 
 ENV SERVICE_ENVIRONMENT ${SERVICE_ENVIRONMENT}
 
+RUN apt-get update -y
+RUN apt-get upgrade -y
+
+# ########################################################################### #
+# For MySQL
+# ########################################################################### #
+# Reference: https://pypi.org/project/mysqlclient/
+RUN apt-get install -y \
+	python3-dev \
+	default-libmysqlclient-dev
+
 # ########################################################################### #
 # For SQL Server
 # ########################################################################### #
@@ -32,11 +43,7 @@ WORKDIR /code/bin
 COPY bin/pip_install_requirements.sh .
 
 WORKDIR /code/requirements
-COPY requirements/base.txt .
-COPY requirements/dev.txt .
-COPY requirements/local.txt .
-COPY requirements/stage.txt .
-COPY requirements/prod.txt .
+COPY requirements/. .
 RUN pip_install_requirements.sh /code/requirements
 
 # copy all code over

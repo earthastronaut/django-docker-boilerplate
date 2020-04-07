@@ -110,18 +110,28 @@ DATABASES = {
         'PORT': '5432',
     },
 
-    'db-sql-server': {
-        'ENGINE': 'sql_server.pyodbc',
+    # 'db-sql-server': {
+    #     'ENGINE': 'sql_server.pyodbc',
+    #     # 'HOST': 'MochanCmsDB-local',  # FreeTDS Reference
+    #     'HOST': os.environ['MSSQL_HOST'],
+    #     'NAME': os.environ['MSSQL_DATABASE_NAME'],
+    #     'USER': os.environ['MSSQL_USER'],
+    #     'PASSWORD': os.environ['MSSQL_PASSWORD'],
+    #     'PORT': '1433',
+    #     'OPTIONS': {
+    #         # from /etc/odbcinst.ini
+    #         'driver': 'ODBC Driver 17 for SQL Server'
+    #     }
+    # },
+
+    'db-mysql': {
+        'ENGINE': 'django.db.backends.mysql',
         # 'HOST': 'MochanCmsDB-local',  # FreeTDS Reference
-        'HOST': os.environ['MSSQL_HOST'],
-        'NAME': os.environ['MSSQL_DATABASE_NAME'],
-        'USER': os.environ['MSSQL_USER'],
-        'PASSWORD': os.environ['MSSQL_PASSWORD'],
-        'PORT': '1433',
-        'OPTIONS': {
-            # from /etc/odbcinst.ini
-            'driver': 'ODBC Driver 17 for SQL Server'
-        }
+        'HOST': os.environ['MYSQL_HOST'],
+        'NAME': os.environ['MYSQL_DATABASE'],
+        'USER': os.environ['MYSQL_USER'],
+        'PASSWORD': os.environ['MYSQL_PASSWORD'],
+        'PORT': '3306',
     }
 }
 

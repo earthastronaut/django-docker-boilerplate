@@ -1,8 +1,9 @@
 version: '3.7'
 
 volumes:
-  data-postgres:  
+  # data-postgres:  
   # data-sql-server:
+  data-mysql:
 
 services:
 
@@ -17,11 +18,14 @@ services:
     volumes:
       - ./webserver:/code     
     depends_on:
-      - db-postgres
-      # - db-sql-server
+      # - db-postgres
+      - db-mysql
+      # - db-sql-server      
     environment:
       DJANGO_SETTINGS_MODULE: webserver.settings.local
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+
+      DEMO_CHOOSE_DATABASE_DEFAULT: db-mysql
 
       # service postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -40,20 +44,43 @@ services:
       MSSQL_PASSWORD: ${MSSQL_PASSWORD}
       MSSQL_HOST: db-sql-server
 
-  db-postgres:
-    # https://hub.docker.com/_/postgres
-    build: database/postgres/.
-    restart: always    
+      # service mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: db-mysql
+
+  # db-postgres:
+  #   # https://hub.docker.com/_/postgres
+  #   build: database/postgres/.
+  #   restart: always    
+  #   expose:
+  #     - 5432
+  #   volumes:
+  #     # Named volume is not necessary for this, can mount to the system
+  #     # See "Where to Store Data" in https://hub.docker.com/_/postgres
+  #     - data-postgres:/var/lib/postgresql/data      
+  #   environment:
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+
+  db-mysql:
+    image: mysql:5
+    # `docker-compose run db-mysql --verbose --help` to see all options
+    command: >
+      --default-authentication-plugin=mysql_native_password 
+      --character-set-server=utf8mb4 
+      --collation-server=utf8mb4_unicode_ci
     expose:
-      - 5432
+      - 3306
     volumes:
-      # Named volume is not necessary for this, can mount to the system
-      # See "Where to Store Data" in https://hub.docker.com/_/postgres
-      - data-postgres:/var/lib/postgresql/data      
+      - data-mysql:/var/lib/mysql
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
   # db-sql-server:
   #   # https://hub.docker.com/_/microsoft-mssql-server
