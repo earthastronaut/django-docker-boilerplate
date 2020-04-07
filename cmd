@@ -126,6 +126,106 @@ deleteuser)
 	docker-compose exec webserver scripts/delete_user.sh ${@:2}
 	;;
 
+# ---------------------------------------------------------------------------- #
+# postgres helper commands
+
+psql)
+    docker-compose exec db bash -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
+	;;
+
+
+pg_scripts)
+	echo 'NOT IMPLEMENTED'
+	exit 1
+	FILES=postgres/scripts/*
+	for fp in $FILES
+	do
+		echo "Executing: $fp"
+
+		fp_docker=/opt/scripts/$(basename $fp)    
+		psql_cmd='psql -U $POSTGRES_USER -d $POSTGRES_DB -f '$fp_docker
+	    docker-compose exec postgres bash -c "$psql_cmd"
+
+	done		
+	;;
+
+
+backup)
+	echo '-----------------------'
+	echo 'Postgres Backup'
+	echo '-----------------------'
+
+	out_dir_host=${PROJECT_DIR}'/database/untracked_backups'
+ 	out_dir_guest='/mnt/backups'
+
+	if [ ! -d "$out_dir_host" ]; then
+	  # Control will enter here if $DIRECTORY doesn't exist.
+	  echo "Creating backup directory $out_dir_host"
+	  mkdir $out_dir_host
+	fi	
+
+	out_filename=$(basename $2)
+	if [[ "$out_filename" == "" ]] # not provided
+	then 
+		# pgdump_2019-10-09T21:02:26.backup
+		now=$(date +'%Y-%m-%dT%H:%M:%S')
+		out_filename='pg_dump_'$now'.backup'
+	fi
+	echo "Backup file: $out_filename"
+
+	out_filepath_guest=${out_dir_guest}/${out_filename}
+	echo "Backup filepath: $out_filepath_guest"
+
+	name='basil_db_1'
+	started_db=false
+	if [[ "$(docker ps -f "name=$name" --format '{{.Names}}')" == "" ]]
+	then
+		started_db=true
+		docker-compose up -d db
+	fi
+
+	# https://mkyong.com/database/backup-restore-database-in-postgresql-pg_dumppg_restore/
+	psql_cmd='pg_dump -U $POSTGRES_USER -d $POSTGRES_DB --clean --blobs --verbose --format=c --file='$out_filepath_guest	
+	docker-compose exec db bash -c "$psql_cmd"
+
+	if [[ $started_db ]]
+	then
+		docker-compose stop db
+	fi
+	;;
+
+restore)
+	echo '-----------------------'
+	echo 'Postgres Restore'
+	echo '-----------------------'
+
+	in_dir_host=${PROJECT_DIR}'/database/untracked_backups'
+	in_dir_guest='/mnt/backups'
+
+	in_filepath_host=$2
+	in_filename=$(basename $2)
+	in_filepath_guest=${in_dir_guest}/$in_filename
+
+	echo "Backup file: $in_filename"
+	echo "Backup host location: $in_filepath_host"
+	echo "Backup guest location: $in_filepath_guest"
+
+	name='basil_db_1'
+	started_db=false
+	if [[ "$(docker ps -f "name=$name" --format '{{.Names}}')" == "" ]]
+	then
+		started_db=true
+		docker-compose up -d db
+	fi
+
+	psql_cmd='pg_restore -U $POSTGRES_USER -d $POSTGRES_DB --verbose '$in_filepath_guest	
+	docker-compose exec db bash -c "$psql_cmd"
+
+	if [[ $started_db ]]
+	then
+		docker-compose stop db
+	fi
+	;;
 
 # ---------------------------------------------------------------------------- #
 # defaults
