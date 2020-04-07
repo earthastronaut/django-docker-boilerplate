@@ -26,9 +26,12 @@ else
 
 fi
 
-docker-compose exec webserver \
-	django-admin shell \
+
+wait_for_database.sh
+
+django-admin shell \
 	--command="from django.contrib.auth.models import User; user=User(username='${username}', is_staff=${is_staff}, is_superuser=${is_superuser}); user.set_password('${password}'); user.save()"
+
 exitcode=$?
 
 if [[ $exitcode == 0 ]]

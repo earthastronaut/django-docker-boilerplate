@@ -1,7 +1,8 @@
 #!env bash
 echo $0
 
-PROJECT_DIR=$(dirname "$(readlink "$0")")
+PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 usage="usage: $(basename "$0") <command> 
 
 This script helps with simple command shortcuts for development. 
@@ -10,21 +11,26 @@ NOT RECOMMENDED TO USE THESE FOR PRODUCTION. USE ./scripts/prod FOR
 SCRIPTS NEEDED BY DOWNSTREAM BUILD SERVICES.
 
 
-general helper commands 
-	link_me		Link this cmd to /usr/local/bin/cmd
-
 docker helper commands 
+
 	up          Wrapper for docker-compose up
 	run 		Wrapper for docker-compose run
 	exec  		Wrapper for docker-compose exec
 	quickstart	Build and initialize the project 	
 
 webserver helper commands
+
 	bash       	Start a bash shell in the server as exec
 	shell		Start a django shell as exec
 	manage.py	Run python manage.py <arguments> as exec fallback to run
+	createuser 	Create a user. Args: username password [is_staff|is_superuser]
+	deleteuser 	Delete a user. Args: username
 
 "
+
+# Commands here work within the context of this directory. This should 
+# temporarily navigate you to the project dir during the script.
+cd $PROJECT_DIR
 
 # ---------------------------------------------------------------------------- #
 # Take the input command
@@ -66,11 +72,11 @@ quickstart):
 	echo '----------------------------'
 	docker-compose exec webserver manage.py migrate
 
-	# echo '----------------------------'
-	# echo 'Create Admin User'
-	# echo '----------------------------'
-	# echo 'WARNING: creating admin user. Should probably delete.'
-	# docker-compose exec webserver bash -c 'scripts/create_user.sh admin admin superuser 2> /dev/null'
+	echo '----------------------------'
+	echo 'Create Admin User'
+	echo '----------------------------'
+	echo 'WARNING: creating admin user. Should probably delete.'
+	docker-compose exec webserver bash -c 'scripts/create_user.sh admin admin superuser 2> /dev/null'
 
 	echo '----------------------------'
 	echo 'Collectstatic'
@@ -113,14 +119,13 @@ manage.py)
 	;;
 
 createuser)
-	webserver/scripts/create_user.sh ${@:2}
-	exit
+	docker-compose exec webserver scripts/create_user.sh ${@:2}
 	;;
 
 deleteuser)
-	webserver/scripts/delete_user.sh ${@:2}
-	exit
+	docker-compose exec webserver scripts/delete_user.sh ${@:2}
 	;;
+
 
 # ---------------------------------------------------------------------------- #
 # defaults
