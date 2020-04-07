@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(
         )
     )
 )
+APPS_DIR = os.path.join(BASE_DIR, 'apps')
 
 
 # Quick-start development settings - unsuitable for production
@@ -66,7 +67,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            os.path.join(APPS_DIR, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -101,14 +102,14 @@ DATABASES = {
         'PORT': '5432',
     },
 
-    'db-sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ['SQLITE_FILEPATH'],
-        'HOST': '',
-        'USER': '',
-        'PASSWORD': '',
-        'PORT': '5432',
-    },
+    # 'db-sqlite': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.environ['SQLITE_FILEPATH'],
+    #     'HOST': '',
+    #     'USER': '',
+    #     'PASSWORD': '',
+    #     'PORT': '5432',
+    # },
 
     # 'db-sql-server': {
     #     'ENGINE': 'sql_server.pyodbc',
@@ -124,15 +125,15 @@ DATABASES = {
     #     }
     # },
 
-    'db-mysql': {
-        'ENGINE': 'django.db.backends.mysql',
-        # 'HOST': 'MochanCmsDB-local',  # FreeTDS Reference
-        'HOST': os.environ['MYSQL_HOST'],
-        'NAME': os.environ['MYSQL_DATABASE'],
-        'USER': os.environ['MYSQL_USER'],
-        'PASSWORD': os.environ['MYSQL_PASSWORD'],
-        'PORT': '3306',
-    }
+    # 'db-mysql': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     # 'HOST': 'MochanCmsDB-local',  # FreeTDS Reference
+    #     'HOST': os.environ['MYSQL_HOST'],
+    #     'NAME': os.environ['MYSQL_DATABASE'],
+    #     'USER': os.environ['MYSQL_USER'],
+    #     'PASSWORD': os.environ['MYSQL_PASSWORD'],
+    #     'PORT': '3306',
+    # }
 }
 
 # TODO: for project choose a database backend, pick that as default
@@ -176,6 +177,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(APPS_DIR, 'untracked_collectstatic')
+STATICFILES_DIRS = [
+    os.path.join(APPS_DIR, 'static'),
+]
 
 
 # Logging
