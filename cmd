@@ -17,7 +17,7 @@ docker helper commands
 	up          Wrapper for docker-compose up
 	run 		Wrapper for docker-compose run
 	exec  		Wrapper for docker-compose exec
-	demostart   Build and initialize the project 
+	quickstart	Build and initialize the project 	
 
 webserver helper commands
 	bash       	Start a bash shell in the server as exec
@@ -48,13 +48,43 @@ exec)
 	exit 
 	;;
 
-demostart):
+quickstart):
+	echo '----------------------------'
+	echo 'Build Images'
+	echo '----------------------------'
 	docker-compose build
-	docker-compose run --rm webserver manage.py migrate
-	# ./webserver/scripts/create_user.sh me password123
-	docker-compose up
-	exit 
+
+	echo '----------------------------'
+	echo 'Start Images'
+	echo '----------------------------'
+	docker-compose up -d webserver
+	# wait for started
+	docker-compose exec webserver wait_for_database.sh
+
+	echo '----------------------------'
+	echo 'Run Migrations'
+	echo '----------------------------'
+	docker-compose exec webserver manage.py migrate
+
+	# echo '----------------------------'
+	# echo 'Create Admin User'
+	# echo '----------------------------'
+	# echo 'WARNING: creating admin user. Should probably delete.'
+	# docker-compose exec webserver bash -c 'scripts/create_user.sh admin admin superuser 2> /dev/null'
+
+	echo '----------------------------'
+	echo 'Collectstatic'
+	echo '----------------------------'	
+	docker-compose exec webserver manage.py collectstatic --no-input
+
+	echo '----------------------------'
+	echo 'Restart Images Attached'
+	echo '----------------------------'	
+	docker-compose stop webserver
+	docker-compose up webserver
+
 	;;
+
 
 # ---------------------------------------------------------------------------- #
 # webserver helper commands
