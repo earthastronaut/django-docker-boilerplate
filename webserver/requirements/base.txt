@@ -18,7 +18,7 @@
 # -------------------------------------------
 # Requirements with Versions
 # -------------------------------------------
-Django==3.0.5
+Django==3.0.12
 # django-pyodbc-azure==2.1.0.0
 psycopg2==2.8.4
 pyodbc==4.0.30
